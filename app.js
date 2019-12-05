@@ -14,17 +14,15 @@ app.use(bodyParser.urlencoded({extended: true}));
 
 
 app.get('/', function(req, res) {
-    let url = 'https://xkcd.com/info.0.json';
-    let img;
-    nodeFetch(url)
-    .then(resp => resp.json())
-    .then(data => {
-        img = data.img;
-        res.render('index', {img:img});
-    })
-    .catch(err => {
-        console.log(err);
-        res.render('index');
+    var request = require('request');
+    request("https://xkcd.com/info.0.json", function(error, response, body) {
+        if (!error && response.statuscode === 200) {
+            var object = JSON.parse(body);
+            res.render("index", {img_url: object.img, title: object.title, year: object.year});
+
+        } else {
+            res.render("index", {title: "Failed to get title", year: "Failed to get year"});
+        }
     });
 });
 
