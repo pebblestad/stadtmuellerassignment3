@@ -1,16 +1,14 @@
 var http = require('http');
 var path = require('path');
-var bodyParser = require('body-parser');
-const nodeFetch = require('node-fetch');
-
-const express = require('express');
+const express = require("express");
+var bodyParser = require("body-parser");
 var app = express();
 var port = process.env.PORT || 3000;
 
 app.set('views', path.join(__dirname, "html"));
 app.set('view engine', 'ejs');
-app.use(express.static('public'));
-app.use(bodyParser.urlencoded({extended: true}));
+app.use(express.static("public"));
+app.use(bodyParser.urlencoded({encoded: true}));
 
 
 app.get('/', function(req, res) {
@@ -26,12 +24,12 @@ app.get('/', function(req, res) {
     });
 });
 
-app.get('/randomComic', function(req, res) {
+app.get('/rand_comic', function(req, res) {
     var = random_number = Math.floor(Math.random() * 2219) + 1;
     getComic(random_number, res, "random_comic");
 });
 
-app.get('/another_random', function(req, res) {
+app.get('/rand_comic_two', function(req, res) {
     var random_number = Math.floor(Math.random() * 2219 + 1;
     getComic(random_number, res, "another_random");
 });
