@@ -28,6 +28,23 @@ app.get('/', function(req, res) {
     });
 });
 
+app.get('/randomComic', function(req, res) {
+    var = random_number = Math.floor(Math.random() * 2219) + 1;
+    getComic(random_number, res, "random_comic");
+});
+
+app.get('/another_random', function(req, res) {
+    var random_number = Math.floor(Math.random() * 2219 + 1;
+    getComic(random_number, res, "another_random");
+});
+
+/**
+ * This function is used for getting comic by passing a random number between 1 to 2219
+ * @param random_number : a random number from 1 to 2219
+ * @param res : the response page
+ * @param page : the page that you want to render
+ */
+
 http.createServer(app).listen(port, function()
 {
 
