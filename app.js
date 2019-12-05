@@ -8,8 +8,10 @@ var app = express();
 var port = process.env.PORT || 3000;
 
 app.set('views', path.join(__dirname, "html"));
+app.set('view engine', 'ejs');
 app.use(express.static('public'));
 app.use(bodyParser.urlencoded({extended: true}));
+
 
 app.get('/', function(req, res) {
     let url = 'https://xkcd.com/info.0.json';
@@ -24,4 +26,9 @@ app.get('/', function(req, res) {
         console.log(err);
         res.render('index');
     });
+});
+
+http.createServer(app).listen(port, function()
+{
+
 });
