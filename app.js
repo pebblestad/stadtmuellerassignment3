@@ -45,6 +45,20 @@ app.get('/another_random', function(req, res) {
  * @param page : the page that you want to render
  */
 
+ function getComic(random_number, res, page) {
+     var request = require('request');
+     request("https://xkcd.com/" + random_number + "/info.0.json", function(error, response, body) {
+         if (!error && response.statusCode === 200) {
+             var object = JSON.parse(body);
+
+             res.render(page, {img_url: object.img, title: object.title, year: object.year });
+         
+         } else {
+             res.render(page, {img_url: "", title: "Nothing here", year: "No year available"});
+         }
+     });
+ }
+
 http.createServer(app).listen(port, function()
 {
 
