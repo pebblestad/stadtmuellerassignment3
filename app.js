@@ -1,5 +1,6 @@
 var http = require('http');
 var path = require('path');
+var fetch = require('node-fetch');
 const express = require("express");
 var bodyParser = require("body-parser");
 var app = express();
@@ -8,30 +9,28 @@ var port = process.env.PORT || 3000;
 app.set('views', path.join(__dirname, "html"));
 app.set('view engine', 'ejs');
 app.use(express.static("public"));
-app.use(bodyParser.urlencoded({encoded: true}));
+app.use(bodyParser.urlencoded({ extended: true }));
 
+var imageLink = '';
+var year = '';
+var title = '';
+const MAX_NUMBER_COMIC = 2237;
 
-app.get('/', function(req, res) {
-    var request = require('request');
-    request("https://xkcd.com/info.0.json", function(error, response, body) {
-        if (!error && response.statuscode === 200) {
-            var object = JSON.parse(body);
-            res.render("index", {img_url: object.img, title: object.title, year: object.year});
-
-        } else {
-            res.render("index", {title: "Failed to get title", year: "Failed to get year"});
-        }
-    });
+app.get('/', function (req, res) {
+    getComicInformation(-1);
+    res.render("index", { img_url: imageLink, title: title, year: year });
 });
 
-app.get('/rand_comic', function(req, res) {
-    var = random_number = Math.floor(Math.random() * 2219) + 1;
-    getComic(random_number, res, "random_comic");
+app.get('/rand_comic', function (req, res) {
+    var random_number = Math.floor(Math.random() * MAX_NUMBER_COMIC) + 1;
+    getComicInformation(random_number);
+    res.render("rand_comic", { img_url: imageLink, title: title, year: year });
 });
 
-app.get('/rand_comic_two', function(req, res) {
-    var random_number = Math.floor(Math.random() * 2219 + 1;
-    getComic(random_number, res, "another_random");
+app.get('/rand_comic_two', function (req, res) {
+    var random_number = Math.floor(Math.random() * MAX_NUMBER_COMIC + 1);
+    getComicInformation(random_number);
+    res.render("rand_comic_two", { img_url: imageLink, title: title, year: year });
 });
 
 /**
@@ -41,21 +40,25 @@ app.get('/rand_comic_two', function(req, res) {
  * @param page : the page that you want to render
  */
 
- function getComic(random_number, res, page) {
-     var request = require('request');
-     request("https://xkcd.com/" + random_number + "/info.0.json", function(error, response, body) {
-         if (!error && response.statusCode === 200) {
-             var object = JSON.parse(body);
+function getComicInformation(randomNumber) {
+    var url;
 
-             res.render(page, {img_url: object.img, title: object.title, year: object.year });
-         
-         } else {
-             res.render(page, {img_url: "", title: "Nothing here", year: "No year available"});
-         }
-     });
- }
+    if (randomNumber === -1) {
+        url = 'http://xkcd.com/info.0.json';
+    } else {
+        url = 'http://xkcd.com/' + randomNumber + '/info.0.json';
+    }
+    fetch(url)
+        .then(res => res.json())
+        .then(data => {
+            imageLink = data.img;
+            title = data.title;
+            year = data.year;
+        }).catch(err => {
+            console.log(err);
+        });
+}
 
-http.createServer(app).listen(port, function()
-{
+http.createServer(app).listen(port, function () {
 
 });
